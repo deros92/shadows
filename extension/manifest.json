@@ -1,0 +1,87 @@
+{
+  "manifest_version": 3,
+  "name": "Shadows",
+  "version": "0.1.0",
+  "description": "Anonimizza in locale i dati sensibili prima che i prompt arrivino alle AI in chat.",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxqy3PpxE+ll4H/3LephiLGHACefVeSwJxThO9pyiFizQTjPx3eocQ2Lv2BROBvpuP9xAE8qZPLTE2QFMNxQkJZC9ik2v572Pg6G2Ae4jt3EfDlOR5sia8qZ1+h1ep8XpxdPBddcI8NfGELDcXQFo1ArcbuLOuuEAYjxbooX/LghCwHcUju5JlHMj6Vkuh0mjDGGPCJoa8RcrpGu1l1slX+uNe9FEDlXmqvxbPDQRkh5LsvV8EhVdnACprYFimTp57l+2RTfsd/MhJZUeP1cfCFFE/jR+qeUUo9pdso/bzmv1PUuZ5acxuFZrwLqaCsybSvaAsdUUixaXlhuK0dYhuwIDAQAB",
+  "permissions": [
+    "storage",
+    "declarativeNetRequest",
+    "activeTab",
+    "nativeMessaging"
+  ],
+  "declarative_net_request": {
+    "rule_resources": [
+      {
+        "id": "draft_leaks",
+        "enabled": true,
+        "path": "rules.json"
+      }
+    ]
+  },
+  "host_permissions": [
+    "http://127.0.0.1:8765/*",
+    "http://localhost:8765/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://chatgpt.com/*",
+        "https://chat.openai.com/*",
+        "https://claude.ai/*",
+        "https://www.perplexity.ai/*",
+        "https://perplexity.ai/*",
+        "https://gemini.google.com/*",
+        "https://chat.mistral.ai/*",
+        "https://copilot.microsoft.com/*",
+        "http://127.0.0.1:8765/demo*",
+        "http://localhost:8765/demo*"
+      ],
+      "js": [
+        "guard.js"
+      ],
+      "world": "MAIN",
+      "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "https://chatgpt.com/*",
+        "https://chat.openai.com/*",
+        "https://claude.ai/*",
+        "https://www.perplexity.ai/*",
+        "https://perplexity.ai/*",
+        "https://gemini.google.com/*",
+        "https://chat.mistral.ai/*",
+        "https://copilot.microsoft.com/*",
+        "http://127.0.0.1:8765/demo*",
+        "http://localhost:8765/demo*"
+      ],
+      "js": [
+        "sites.js",
+        "content.js"
+      ],
+      "css": [
+        "content.css"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_title": "Shadows",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png"
+    }
+  }
+}

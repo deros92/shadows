@@ -1,0 +1,5 @@
+# Clienti riservati: un nome per riga. Valori di esempio, sostituirli con quelli reali.
+SuperMercati Bianchi
+Bianchi Distribuzione
+Rossi Food Service
+Catering Lombardo

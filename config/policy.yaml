@@ -1,0 +1,77 @@
+# Shadows - policy di esempio per un'azienda.
+#
+# Azioni, dalla più permissiva alla più severa:
+#   allow   il messaggio parte così com'è
+#   warn    l'utente vede cosa è stato trovato e sceglie (anonimizzato o originale)
+#   redact  il messaggio può partire solo anonimizzato
+#   block   il messaggio non può partire
+#
+# Decisione finale = la più severa tra (a) le azioni delle categorie trovate e
+# (b) la soglia raggiunta dal punteggio (somma dei pesi dei valori distinti, max 100).
+
+server:
+  port: 8765
+
+# NER italiano rizzo-pii (MIT): https://huggingface.co/rizzoaiacademy/rizzo-pii-0.3B
+#   integrato  il modello gira dentro Shadows; al primo avvio viene scaricato in models/
+#   servizio   si usa un'app rizzo-pii già avviata a parte (desktop o Docker), via HTTP
+rizzo_pii:
+  enabled: true
+  mode: integrato
+  model_dir: models/rizzo-pii-0.3B-v1.5.0
+  repo: rizzoaiacademy/rizzo-pii-0.3B
+  revision: v1.5.0
+  exclude_tags: [GENDER, AGE, TIME]   # poco rischiosi e molto frequenti
+  # solo per mode: servizio
+  url: http://127.0.0.1:5005
+  timeout: 10
+
+# Termini riservati dell'azienda: un termine per riga.
+dizionari:
+  CLIENTE: config/dizionari/clienti.txt
+  FORNITORE: config/dizionari/fornitori.txt
+  PROGETTO: config/dizionari/progetti.txt
+
+# Solo metadati (azione, categorie, conteggi): mai testo né valori.
+audit:
+  enabled: true
+  path: logs/audit.jsonl
+
+soglie:
+  warn: 10
+  redact: 30
+  block: 101     # oltre 100: il blocco arriva solo dalle categorie, mai dalla somma
+
+# Categorie non elencate sotto (per esempio nuove etichette di rizzo-pii).
+default: {peso: 15, azione: redact}
+
+categorie:
+  # Segreti tecnici: non si mandano nemmeno anonimizzati, vanno ruotati.
+  SECRET:           {peso: 100, azione: block}
+  # Credenziali personali: all'AI arriva il segnaposto, non il valore.
+  # Metterla a "block" se la regola aziendale è "le password non si scrivono in chat".
+  PASSWORD:         {peso: 60, azione: redact}
+  # Dati personali e finanziari.
+  CREDITCARDNUMBER: {peso: 60, azione: redact}
+  IBAN:             {peso: 50, azione: redact}
+  CF:               {peso: 40, azione: redact}
+  ID_DOC:           {peso: 40, azione: redact}
+  FULLNAME:         {peso: 25, azione: redact}
+  BIRTHDATE:        {peso: 25, azione: redact}   # con nome e città identifica la persona
+  EMAIL:            {peso: 20, azione: redact}
+  TELEPHONENUM:     {peso: 20, azione: redact}
+  PIVA:             {peso: 15, azione: redact}
+  STREET:           {peso: 15, azione: redact}
+  TARGA:            {peso: 15, azione: redact}
+  IP:               {peso: 10, azione: redact}
+  # Riservatezza commerciale (dizionari aziendali).
+  PROGETTO:         {peso: 35, azione: redact}
+  CLIENTE:          {peso: 30, azione: redact}
+  FORNITORE:        {peso: 30, azione: redact}
+  # Utili all'AI per rispondere: l'utente decide se lasciarli.
+  AMOUNT:           {peso: 10, azione: warn}
+  ORG:              {peso: 10, azione: warn}
+  CITY:             {peso: 3,  azione: warn}
+  DATE:             {peso: 2,  azione: allow}
+  PROVINCE:         {peso: 2,  azione: allow}
+  ZIPCODE:          {peso: 5,  azione: warn}

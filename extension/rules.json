@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": {
+      "requestDomains": ["suggest.perplexity.ai"],
+      "resourceTypes": ["websocket", "xmlhttprequest", "other"]
+    }
+  },
+  {
+    "id": 2,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": {
+      "regexFilter": "^https://chatgpt\\.com/backend-api/(.*/)?conversation/prepare",
+      "resourceTypes": ["xmlhttprequest", "other"]
+    }
+  }
+]

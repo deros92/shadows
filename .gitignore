@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+*.egg-info/
+build/
+dist/
+
+# Scaricati o generati in locale: ognuno li ottiene da sé
+models/
+tessdata/
+logs/
+extension/_metadata/
+
+# Chiave privata dell'estensione: chi la possiede può firmare aggiornamenti con lo stesso ID
+keys/
+*.pem
+
+# Dati riservati: i nomi veri di clienti, fornitori e progetti
+# (i .txt in config/dizionari/ contengono solo esempi pubblicabili)
+config/dizionari/*.local.txt
+config/*.local.yaml
+
+# Documenti personali, non parte del progetto pubblico
+manualeutente.md
+HANDOFF.md
+info.md
+draft.md
+
+# Editor e sistema operativo
+.vscode/
+.idea/
+.claude/
+Thumbs.db
+Desktop.ini
+.DS_Store

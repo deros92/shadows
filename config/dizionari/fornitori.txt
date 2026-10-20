@@ -1,0 +1,4 @@
+# Fornitori con condizioni riservate. Valori di esempio.
+Caseificio Valpadana
+Ortofrutta Sud
+Pastificio Molisano
